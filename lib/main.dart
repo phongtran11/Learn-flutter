@@ -4,15 +4,19 @@ void main() {
   runApp(const MyApp());
 }
 
-int multipliedByTwo(int a) => a * 2;
+Stream<String> getName() {
+  // return Stream.value('Foo');
 
-Future<int> asynchronousFunction(int a) {
-  return Future.delayed(const Duration(seconds: 1), () => multipliedByTwo(a));
+  return Stream.periodic(
+      const Duration(seconds: 1), (value) => 'foo'); // same like setTimeOut
 }
 
 void test() async {
-  final result = await asynchronousFunction(2);
-  print(result);
+  print('start');
+  await for (final value in getName()) {
+    print(value);
+  }
+  print('end');
 }
 
 class MyApp extends StatelessWidget {
