@@ -7,32 +7,34 @@ void main() {
 class Cat {
   final String name;
   Cat(this.name);
-
-  // factory Cat.fluffBal() {
-  //   return Cat('Fluff Ball');
-  // }  create factory default Cat;
-
-  @override
-  bool operator ==(covariant Cat other) => other.name == name;
-
-  @override
-  int get hashCode => name.hashCode;
 }
 
-// void test() {
-//   final fluffBall = Cat.fluffBal();
-//   print(fluffBall.name);
-// }
+class Person {
+  final String firstName;
+  final String lastName;
 
-void test1() {
-  final cat1 = Cat('Foo');
-  final cat2 = Cat('Foo');
+  Person(this.firstName, this.lastName);
+}
 
-  if (cat1 == cat2) {
-    print('They are equal');
-  } else {
-    print('they are not equal');
+extension Run on Cat {
+  void run() {
+    print('Cat $name is running');
   }
+}
+
+extension FullName on Person {
+  String get fullName => '$firstName $lastName';
+}
+
+void testPersion() {
+  final foo = Person('Foo', 'Bar');
+  print(foo.fullName);
+}
+
+void testCat() {
+  final cat = Cat('black');
+  cat.run();
+  print(cat.name);
 }
 
 class MyApp extends StatelessWidget {
@@ -40,7 +42,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    test1();
+    testCat();
+    testPersion();
     // TODO: implement build
     throw UnimplementedError();
   }
