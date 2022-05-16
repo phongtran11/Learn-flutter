@@ -4,37 +4,15 @@ void main() {
   runApp(const MyApp());
 }
 
-class Cat {
-  final String name;
-  Cat(this.name);
+int multipliedByTwo(int a) => a * 2;
+
+Future<int> asynchronousFunction(int a) {
+  return Future.delayed(const Duration(seconds: 1), () => multipliedByTwo(a));
 }
 
-class Person {
-  final String firstName;
-  final String lastName;
-
-  Person(this.firstName, this.lastName);
-}
-
-extension Run on Cat {
-  void run() {
-    print('Cat $name is running');
-  }
-}
-
-extension FullName on Person {
-  String get fullName => '$firstName $lastName';
-}
-
-void testPersion() {
-  final foo = Person('Foo', 'Bar');
-  print(foo.fullName);
-}
-
-void testCat() {
-  final cat = Cat('black');
-  cat.run();
-  print(cat.name);
+void test() async {
+  final result = await asynchronousFunction(2);
+  print(result);
 }
 
 class MyApp extends StatelessWidget {
@@ -42,9 +20,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    testCat();
-    testPersion();
     // TODO: implement build
+    test();
     throw UnimplementedError();
   }
 }
