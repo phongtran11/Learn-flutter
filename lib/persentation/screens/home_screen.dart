@@ -84,17 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
               color: widget.color,
               child: const Text('Go to 2'),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => BlocProvider.value(
-                      value: BlocProvider.of<CounterCubit>(context),
-                      child: const SecondScreen(
-                        title: 'SecondScreen',
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                  ),
-                );
+                Navigator.of(context).pushNamed('/second');
+              },
+            ),
+            MaterialButton(
+              color: Colors.green,
+              child: const Text('Go to 3'),
+              onPressed: () {
+                Navigator.of(context).pushNamed('/third');
               },
             ),
           ],
