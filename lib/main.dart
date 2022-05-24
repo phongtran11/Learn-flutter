@@ -1,47 +1,70 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/logic/cubit/counter_cubit.dart';
+import 'package:flutter_app/contants/themes/app_theme.dart';
+import 'package:flutter_app/logic/cubit/cubit/theme_cubit.dart';
 import 'package:flutter_app/presentation/router/app_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'logic/cubit/internet_cubit.dart';
-
 void main() {
-  runApp(MyApp(
-    appRouter: AppRouter(),
-    connectivity: Connectivity(),
-  ));
+  runApp(
+      // Bloc.observer = AppBlocObserver();
+      MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final AppRouter appRouter;
-  final Connectivity connectivity;
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ThemeCubit(),
+        ),
+      ],
+      child: const Counter(),
+    );
+  }
+}
 
-  const MyApp({
-    Key? key,
-    required this.appRouter,
-    required this.connectivity,
-  }) : super(key: key);
+class Counter extends StatefulWidget {
+  const Counter({Key? key}) : super(key: key);
+
+  @override
+  State<Counter> createState() => _CounterState();
+}
+
+class _CounterState extends State<Counter> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    WidgetsBinding.instance!.addObserver(this);
+    super.initState();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    context.read<ThemeCubit>().updateAppTheme();
+
+    super.didChangePlatformBrightness();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<InternetCubit>(
-          create: (context) => InternetCubit(connectivity: connectivity),
-        ),
-        BlocProvider<CounterCubit>(
-          create: (context) => CounterCubit(),
+        BlocProvider(
+          create: (context) => ThemeCubit(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        onGenerateRoute: appRouter.onGenerateRoute,
-      ),
+      child: Builder(builder: (appContext) {
+        return MaterialApp(
+          title: 'App',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: appContext
+              .select((ThemeCubit themeCubit) => themeCubit.state.themeMode),
+          initialRoute: AppRouter.counter,
+          onGenerateRoute: AppRouter.onGenerateRoute,
+        );
+      }),
     );
   }
 }

@@ -1,38 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/presentation/screens/home_screen.dart';
-import 'package:flutter_app/presentation/screens/second_screen.dart';
-import 'package:flutter_app/presentation/screens/third_screen.dart';
+import 'package:flutter_app/presentation/screens/counter_screen/counter_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppRouter {
-  Route onGenerateRoute(RouteSettings settings) {
+  static const String counter = 'counter';
+
+  const AppRouter._();
+
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case '/':
+      case counter:
         return MaterialPageRoute(
-          builder: (_) => HomeScreen(
-            title: "Home Screen",
-            color: Colors.blueAccent,
-          ),
-        );
-      case '/second':
-        return MaterialPageRoute(
-          builder: (_) => SecondScreen(
-            title: "Second Screen",
-            color: Colors.redAccent,
-          ),
-        );
-      case '/third':
-        return MaterialPageRoute(
-          builder: (_) => ThirdScreen(
-            title: "Thirst Screen",
-            color: Colors.greenAccent,
+          builder: (_) => const CounterScreen(
+            title: 'Screen Home',
           ),
         );
       default:
-        return MaterialPageRoute(
-          builder: (_) => const Scaffold(),
-        );
-        ;
+        throw Exception();
     }
   }
 }
