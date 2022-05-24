@@ -1,70 +1,34 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/contants/themes/app_theme.dart';
-import 'package:flutter_app/logic/cubit/cubit/theme_cubit.dart';
-import 'package:flutter_app/presentation/router/app_router.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_app/bloc/bloc_import.dart';
+import 'package:flutter_app/screens/home_screen.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
-  runApp(
-      // Bloc.observer = AppBlocObserver();
-      MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final storage = await HydratedStorage.build(
+      storageDirectory: await getApplicationDocumentsDirectory());
+
+  HydratedBlocOverrides.runZoned(
+    () => runApp(MyApp()),
+    storage: storage,
+    blocObserver: MyBlocObserver(),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => ThemeCubit(),
-        ),
-      ],
-      child: const Counter(),
-    );
-  }
-}
-
-class Counter extends StatefulWidget {
-  const Counter({Key? key}) : super(key: key);
-
-  @override
-  State<Counter> createState() => _CounterState();
-}
-
-class _CounterState extends State<Counter> with WidgetsBindingObserver {
-  @override
-  void initState() {
-    WidgetsBinding.instance!.addObserver(this);
-    super.initState();
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    context.read<ThemeCubit>().updateAppTheme();
-
-    super.didChangePlatformBrightness();
-  }
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => ThemeCubit(),
+    return BlocProvider(
+      create: (context) => CounterBloc(),
+      child: MaterialApp(
+        home: Scaffold(
+          appBar: AppBar(title: const Text('Counter app')),
+          body: const HomeScreen(),
         ),
-      ],
-      child: Builder(builder: (appContext) {
-        return MaterialApp(
-          title: 'App',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: appContext
-              .select((ThemeCubit themeCubit) => themeCubit.state.themeMode),
-          initialRoute: AppRouter.counter,
-          onGenerateRoute: AppRouter.onGenerateRoute,
-        );
-      }),
+      ),
     );
   }
 }
