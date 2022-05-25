@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_import.dart';
-import 'package:flutter_app/screens/home_screen.dart';
+import 'package:flutter_app/blocs/bloc_export.dart';
+import 'package:flutter_app/screens/task_screen.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() async {
@@ -10,9 +10,10 @@ void main() async {
       storageDirectory: await getApplicationDocumentsDirectory());
 
   HydratedBlocOverrides.runZoned(
-    () => runApp(MyApp()),
+    () => runApp(
+      const MyApp(),
+    ),
     storage: storage,
-    blocObserver: MyBlocObserver(),
   );
 }
 
@@ -22,12 +23,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CounterBloc(),
+      create: (context) => TasksBloc(),
       child: MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(title: const Text('Counter app')),
-          body: const HomeScreen(),
+        title: 'Flutter Todo App',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
         ),
+        home: const TasksScreen(),
       ),
     );
   }
