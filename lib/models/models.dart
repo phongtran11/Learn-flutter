@@ -1,1 +1,1 @@
-export 'content_model.dart';
+export 'product.dart';
