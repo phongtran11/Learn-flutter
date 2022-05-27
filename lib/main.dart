@@ -1,5 +1,6 @@
-import 'package:app/screens/screen.dart';
 import 'package:flutter/material.dart';
+
+import 'screens/screens.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,11 +15,10 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: Colors.black,
       ),
-      home: const NavScreen(),
+      home: const RootApp(),
     );
   }
 }

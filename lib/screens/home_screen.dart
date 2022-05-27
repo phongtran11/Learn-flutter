@@ -1,7 +1,7 @@
-import 'package:app/cubits/cubits.dart';
-import 'package:app/data/data.dart';
-import 'package:app/widgets/widget.dart';
+import 'package:app/json/home_json.dart';
 import 'package:flutter/material.dart';
+
+import '../widget/widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -11,82 +11,221 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    _scrollController = ScrollController()
-      ..addListener(() {
-        context.read<AppBarCubit>().setOffset(_scrollController.offset);
-      });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => print('cast'),
-        backgroundColor: Colors.grey[850],
-        child: const Icon(Icons.cast),
-      ),
-      appBar: PreferredSize(
-        preferredSize: Size(screenSize.width, 50.0),
-        child: BlocBuilder<AppBarCubit, double>(
-          builder: (context, state) {
-            return CustomAppBar(
-              scrollOffset: state,
-            );
-          },
-        ),
-      ),
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          const SliverToBoxAdapter(
-            child: ContentHeader(
-              featuredContent: sintelContent,
+      body: getBody(),
+    );
+  }
+
+  Widget getBody() {
+    var size = MediaQuery.of(context).size;
+
+    return SingleChildScrollView(
+      child: Stack(
+        children: [
+          SizedBox(
+            width: size.width,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 400,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/banner_1.png'),
+                            fit: BoxFit.cover),
+                      ),
+                    ),
+                    Container(
+                      height: 400,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.black.withOpacity(0.85),
+                            Colors.black.withOpacity(0.0)
+                          ],
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      right: 0,
+                      left: 0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/images/titulo_1.webp',
+                            width: 300,
+                          ),
+                          const SizedBox(height: 15),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8, right: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                const Text(
+                                  'Experto',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                Container(
+                                  height: 3,
+                                  width: 3,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.7),
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const Text(
+                                  'Irreverentes',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                Container(
+                                  height: 3,
+                                  width: 3,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.7),
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const Text(
+                                  'Empolgantes',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const IconText(icon: Icons.add, text: 'Favorite'),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 4, 13, 4),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              Icons.play_arrow,
+                              color: Colors.black,
+                            ),
+                            SizedBox(width: 5),
+                            Text(
+                              'Play',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    const IconText(icon: Icons.info_outline, text: 'Info')
+                  ],
+                ),
+                ListHorizontal(titleList: 'List', movieData: minhaLista),
+                ListHorizontal(titleList: 'Popular', movieData: popularesLista),
+                ListHorizontal(
+                    titleList: 'Original',
+                    movieData: originalLista,
+                    height: 300,
+                    width: 160),
+                ListHorizontal(titleList: 'Animie', movieData: animesLista),
+              ],
             ),
           ),
-          const SliverPadding(
-            padding: EdgeInsets.only(top: 20),
-            sliver: SliverToBoxAdapter(
-              key: PageStorageKey('previews'),
-              child: Previews(title: 'Previews', contentLists: previews),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ContentList(
-              key: const PageStorageKey('myList'),
-              title: 'My List',
-              contentList: myList,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: ContentList(
-              key: const PageStorageKey('Netflix Originals'),
-              title: 'Netflix Originals',
-              contentList: originals,
-              isOriginals: true,
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.only(bottom: 20),
-            sliver: SliverToBoxAdapter(
-              key: const PageStorageKey('Trending'),
-              child: ContentList(
-                title: 'Trending',
-                contentList: trending,
-              ),
+          SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.asset(
+                        "assets/images/logo.ico",
+                        width: 35,
+                        fit: BoxFit.cover,
+                      ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.search,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                image: const DecorationImage(
+                                  image: AssetImage("assets/images/perfil.png"),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: const [
+                    Text(
+                      'Series',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      'Movies',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      'Trending',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
         ],
